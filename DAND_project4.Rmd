@@ -25,7 +25,7 @@ library(lattice)
 library(MASS)
 library(car)
 library(reshape)
-library (plyr)
+
 ```
 
 # Load the Dataset
@@ -64,9 +64,8 @@ The volatile.acidity indicates the amount of acetic acid in the wine, its conten
 # Make summary of attribute varaible
 summary(wht_wine_quality$volatile.acidity)
 # Histogram using 'gglot'function
-ggplot(aes(x =volatile.acidity), data = wht_wine_quality) + scale_x_continuous()
 # Limit the x-axis to fit the data
-ggplot(aes(x = citric.acid), data = wht_wine_quality) + 
+ggplot(aes(x = volatile.acidity), data = wht_wine_quality) + 
   geom_histogram(binwidth =  0.02,color='black', fill='#FFCC67') +
   xlim(0, quantile(wht_wine_quality$citric.acid, 0.99))
 
@@ -238,15 +237,11 @@ This dataset contains 12 varaibles and 11 of them physicochemical input varaible
 The correlation coefficient between alcohol and quality of white wine is 0.4355747, that shows there is  postive correlation. The boxplot dipict that most of the quality of wine is in the observation are in 5,6, and 7 quality level. The boxplot also displays outlier in the dataset. The linear model also show there exists a positve correlation between alchol and quality. 
 
 ```{r echo=FALSE, Bivariate_Plots}
-
 cor.test(wht_wine_quality$quality, wht_wine_quality$alcohol,method = 'pearson')
-ggplot(aes(factor(quality), alcohol), data = wht_wine_quality) +
+ggplot(aes(alcohol, factor(quality)), data = wht_wine_quality) +
   geom_boxplot()+
-  geom_jitter(alpha = 0.05)  +
-  geom_smooth(aes(quality-2,alcohol), method = 'lm', color = 'red') + 
-  xlab('quality') + 
-  ylab('alcohol') +
-  ggtitle('Quality vs alcohol of White Wine') 
+  geom_jitter(alpha = 0.05)  + xlim(8,13) +
+  geom_smooth(aes(alcohol, quality-2), method = 'lm', color = 'red') 
 
 ```
 
@@ -255,10 +250,10 @@ The correlation coefficient is -0.1136628, which show a negative correrlation be
 ```{r echo=FALSE}
 cor.test(wht_wine_quality$quality, wht_wine_quality$fixed.acidity, 
          method = 'pearson')
-ggplot(aes(factor(quality), fixed.acidity), data = wht_wine_quality) +
+ggplot(aes(fixed.acidity, factor(quality)), data = wht_wine_quality) +
   geom_boxplot()+
-  geom_jitter(alpha = 0.05)  +
-  geom_smooth(aes(quality-2,fixed.acidity), method = 'lm', color = 'red') 
+  geom_jitter(alpha = 0.05) +   xlim(5,12) +
+  geom_smooth(aes(fixed.acidity,quality-2), method = 'lm', color = 'red') 
 
 ```
 
@@ -279,10 +274,10 @@ Negative correlation exists between quality and residual.sugar. Though the redis
 ```{r echo=FALSE}
 cor.test(wht_wine_quality$quality, wht_wine_quality$residual.sugar, 
          method = 'pearson')
-ggplot(aes(factor(quality), residual.sugar), data = wht_wine_quality) +
-  geom_boxplot() + coord_cartesian(ylim = c(0,20)) +
+ggplot(aes(residual.sugar,factor(quality)), data = wht_wine_quality) +
+  geom_boxplot() + coord_cartesian(xlim = c(1,20)) +
   geom_jitter(alpha = 0.05)  + 
-  geom_smooth(aes(quality-2,residual.sugar), method = 'lm', color = 'red') 
+  geom_smooth(aes(residual.sugar, quality-2), method = 'lm', color = 'red') 
 ```
 
 Negative correaltion between quality and chlorides with correaltion cofficient of -0.2099344. Many observation for chloride are fall into outlies, the chloride amount in the dataset is below 0.1 for most of the observations. 
@@ -290,10 +285,10 @@ Negative correaltion between quality and chlorides with correaltion cofficient o
 ```{r echo=FALSE}
 cor.test(wht_wine_quality$quality, wht_wine_quality$chlorides, 
          method = 'pearson')
-ggplot(aes(factor(quality), chlorides), data = wht_wine_quality) +
+ggplot(aes(chlorides, factor(quality)), data = wht_wine_quality) +
   geom_boxplot()+
-  geom_jitter(alpha = 0.05)  +
-  geom_smooth(aes(quality-2,chlorides), method = 'lm', color = 'red') 
+  geom_jitter(alpha = 0.05)  + xlim(0,0.3) +
+  geom_smooth(aes(chlorides, quality-2), method = 'lm', color = 'red') 
 
 ```
 
@@ -302,10 +297,10 @@ A weak positive correlation between free.surfur.dioxide and quality.The boxplot 
 ```{r echo=FALSE}
 cor.test(wht_wine_quality$quality, wht_wine_quality$free.sulfur.dioxide, 
          method = 'pearson')
-ggplot(aes(factor(quality), free.sulfur.dioxide), data = wht_wine_quality) +
+ggplot(aes(free.sulfur.dioxide,factor(quality)), data = wht_wine_quality) +
   geom_boxplot()+
   geom_jitter(alpha = 0.05)  +
-  geom_smooth(aes(quality-2,free.sulfur.dioxide), method = 'lm', color = 'red')
+  geom_smooth(aes(free.sulfur.dioxide, quality-2), method = 'lm', color = 'red')
 ```
 
 Negative correlation between total.sulfur.dioxide and quality. The correlation cofficient between quality and total.sulfur.dioxide is 0.00815 which is a very weak relation. Event though, the values goes as high as 400, the boxplot show that most observations the amount of total sulfer dioxide is below 250. 
@@ -313,9 +308,9 @@ Negative correlation between total.sulfur.dioxide and quality. The correlation c
 ```{r echo=FALSE}
 cor.test(wht_wine_quality$quality, wht_wine_quality$total.sulfur.dioxide, 
          method = 'pearson')
-ggplot(aes(factor(quality), total.sulfur.dioxide), data = wht_wine_quality) +
+ggplot(aes(total.sulfur.dioxide, factor(quality)), data = wht_wine_quality) +
   geom_boxplot()+ geom_jitter(alpha = 0.05)  +
-  geom_smooth(aes(quality-2,total.sulfur.dioxide), method = 'lm',color = 'red') 
+  geom_smooth(aes(total.sulfur.dioxide, quality-2), method = 'lm',color = 'red') 
 
 ```
 
@@ -323,10 +318,10 @@ Still the correaltion between density and quality is negative with a correlation
 
 ```{r echo=FALSE}
 cor.test(wht_wine_quality$quality, wht_wine_quality$density, method = 'pearson')
-ggplot(aes(factor(quality), density), data = wht_wine_quality) +
+ggplot(aes(density, factor(quality)), data = wht_wine_quality) +
   geom_boxplot()+
-  geom_jitter(alpha = 0.05)  +
-  geom_smooth(aes(quality-2,density), method = 'lm', color = 'red') 
+  geom_jitter(alpha = 0.05)  + xlim(0.989,1.005) +
+  geom_smooth(aes(density,quality-2), method = 'lm', color = 'red') 
 
 ```
 
@@ -334,10 +329,10 @@ Positive correaltion between quality and pH of white wine with correlation coffi
 
 ```{r echo=FALSE}
 cor.test(wht_wine_quality$quality, wht_wine_quality$pH, method = 'pearson')
-ggplot(aes(factor(quality), pH), data = wht_wine_quality) +
+ggplot(aes(pH, factor(quality)), data = wht_wine_quality) +
   geom_boxplot()+
   geom_jitter(alpha = 0.05)  +
-  geom_smooth(aes(quality-2,pH), method = 'lm', color = 'red') 
+  geom_smooth(aes(pH,quality-2), method = 'lm', color = 'red') 
 
 ```
 
@@ -346,10 +341,10 @@ Positive correlation exists between quality and and surphates in white wine, the
 ```{r echo=FALSE}
 cor.test(wht_wine_quality$quality, wht_wine_quality$sulphates, 
          method = 'pearson')
-ggplot(aes(factor(quality), sulphates), data = wht_wine_quality) +
+ggplot(aes(sulphates,factor(quality)), data = wht_wine_quality) +
   geom_boxplot()+
   geom_jitter(alpha = 0.05)  +
-  geom_smooth(aes(quality-2,sulphates), method = 'lm', color = 'red') 
+  geom_smooth(aes(sulphates,quality-2), method = 'lm', color = 'red') 
 ```
  
 Overlaying summary with raw data plot show the graph of raw data of quality and alchol. The plot also overlays graph of the grand mean (i.e. the mean of the alcoholic content of the wine for each catagory or level) , the black line, the 50th percentile, the green line, the 10th percentile, the blue line and the 90th percentile, the red line for each white wine quality catagory. All plots show that there is an increase in the amount of alcohol percentage presence in wine for qulity levels above 5.
@@ -360,7 +355,7 @@ ggplot(aes(x=quality, y = alcohol), data = wht_wine_quality) +
  coord_cartesian(xlim = c(2,8)) + coord_cartesian(ylim = c(0.8,1.2)) +
   coord_trans(y = 'sqrt') + 
   geom_line(stat = 'summary', fun.y = mean) +
-  geom_line(stat = 'summary', fun.y = 'quantile', fun.args=list(probs=0.1), 
+  geom_line(stat = 'summary', fun.y= 'quantile', fun.args=list(probs=0.1), 
             linetype =2, color = 'blue')+ 
    geom_line(stat = 'summary', fun.y = 'quantile', fun.args=list(probs=0.9), 
              linetype =2, color = 'red') +
@@ -371,8 +366,11 @@ geom_line(stat = 'summary', fun.y = 'quantile', fun.args=list(probs=0.5),
 
 Let us plot key varaible against each other using 'ggpiars', in the above plots we only see how the  input varaibles are related or correlated with quality. The ggpairs plot show not only the relation between input variables and the quality of white wine but also the relation among each other. The ggpairs plot dicpicts the scatter plot, the histogram and correlation , which is very helpful for quick summary of the given dataset. What can be seen from the corration coefficient from the upper right part of the graph is that the correaltion among each varaible is not that strong, it is below 0.5 for most of the cases.
 
-```{r echo=FALSE}
-ggpairs(wht_wine_quality,2:13, title = 'Summary of relation among varaibles')
+```{r fig.width=10, fig.height=10,echo=FALSE}
+ggpairs(wht_wine_quality,2:13,title = 'Summary of relation among varaibles', 
+        upper = list(continuous = wrap("cor", size = 4)), 
+        lower = list(continuous = "smooth"))
+
 ```
 
 
@@ -419,10 +417,12 @@ Below is the density vs alchol plotted againest quality of the white wine. we ca
 ```{r}
 
 ggplot(data = wht_wine_quality, aes(x = alcohol, y = density, 
-    color = factor(quality))) + geom_point(alpha = 1/2, 
-    position = position_jitter(h = 0), size = 5) +
+    color = quality)) + geom_point(alpha = 1/5, 
+    position = position_jitter(h = 0), size = 2) +
     coord_cartesian(ylim = c(0.987, 1.003)) + 
-    scale_colour_brewer(palette="Set1")
+    scale_colour_gradient(limits=c(0, 10))
+  
+
    
    
 ```
@@ -461,6 +461,7 @@ The histogram plot of quality of the White wine from all observations in the dat
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
 
+
 ggplot(aes(factor(quality), alcohol), data = wht_wine_quality) +
   geom_boxplot() + 
   geom_jitter(alpha = 0.05)  +
@@ -476,10 +477,12 @@ Above we did correaltion between the quality of the white one and the 11 input v
 ### Plot Three
 
 ```{r echo=FALSE, Plot_Three}
-ggplot(data = wht_wine_quality, aes(x = alcohol, y = density, 
-color = factor(quality))) +
-geom_point(alpha = 1/2, position = position_jitter(h = 0), size = 5) +
-coord_cartesian(ylim = c(0.987, 1.003)) + scale_colour_brewer(palette="Set1") + 
+ggplot(data = wht_wine_quality, aes(x = alcohol/100, y = density, 
+    color = quality)) + geom_point(alpha = 1/5, 
+    position = position_jitter(h = 0), size = 2) +
+    coord_cartesian(ylim = c(0.987, 1.003)) + 
+    scale_colour_gradient(limits=c(0, 10)) + 
+  scale_x_continuous(labels = (scales::percent)) +
 geom_smooth(method = "lm", se = FALSE, size = 1) +
    xlab('alcohol amount in % by volume') +
    ylab('density in g/cm^3') +
@@ -493,8 +496,8 @@ The plot shows the density plottes againest alcohol level and classified by qual
 
 # Reflection
 
-In Summary, the above analysis have show that the quality of the white wine depends on the physicochemical input varaibles. The quality of the wine  is posively correlated with alcohol, free.sulfur.dioxide, sulphate and pH and it is negatively correlated with the other physicochemical input varaibles. The correlation among each varaibles in not that strong all correlation coefficient is below 0.5 in  abosute terms, the execption is that there is a strong correlation between density and total.sulfur dioxide which is above 0.8. 
-The challenge while I was working on this data anysis was to identify and figure out which relation, pattern , or correlation among the varialbes is the most important. Which kind of plot I should you to visualize the relation and find out patterns was the other challenge. I understand data before doing any kind of analysis on a given dataset , one should have a good deal of understanding about the dataset. This would have made it much easier to figure out or sepeculate relationships, patterns or trends among each varaible of interest. In my future work of data analysis, I would first try to understand the dataset and vararaibles in the dataset before I dive into analysis.  
+In Summary, the above analysis have show that the quality of the white wine depends on the physicochemical input varaibles. The quality of the wine  is posively correlated with alcohol, free.sulfur.dioxide, sulphate and pH and it is negatively correlated with the other physicochemical input varaibles. The correlation among each varaibles is not that strong, all correlation coefficient is below 0.5 in  abosute terms, the execption is that there is a strong correlation between density and total.sulfur dioxide which is above 0.8. 
+The challenge while I was working on this data analysis was to identify and figure out which relation, pattern , or correlation among the varialbes is the most important. Which kind of plot I should use to visualize the relation and find out patterns was the other challenge. To have a quality anlysis and get some useful insights from a dataset, one should have a good deal of understanding about the dataset before diving direcly to any kind of analysis on a given data . This would have made it much easier to figure out or sepeculate relationships, patterns or trends among each varaible of interest. In my future work of data analysis, I would first try to understand the dataset and vararaibles in the dataset before I dive into analysis.  
 
 
 # Reference
